@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
       type:Date,
       required:false
     }
-  }
+  },{versionKey:false,timestamps:true}
 )
-module.exports = mongoose.model("user" , userSchema)
+module.exports = mongoose.model('user',userSchema)
+//auto create 'user' file in mongoDB

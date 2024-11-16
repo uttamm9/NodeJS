@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 require("dotenv").config();
 
 const app = express()
-const PORT =  6080 
+const PORT =  6001
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
