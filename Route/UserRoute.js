@@ -6,6 +6,8 @@ router.post('/save',userController.createUser)
 
 router.get('/getAllData',userController.getAlluser)
 
+router.get('/single',userController.singledetail)
+
 // router.put('/update/:id',userController.update)
 router.patch('/updateuser',userController.updateuser)
 

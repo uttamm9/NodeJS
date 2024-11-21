@@ -41,3 +41,12 @@ exports.updateuser = async(req,res) => {
   res.status(200).json(user)
 }
 
+exports.singledetail = async(req,res) =>{
+  const {email} = req.query
+  const user = await userModel.findOne({email:email})
+  console.log(user)
+  if(!user){
+    return res.status(404).json({Error:"user not found"});
+    }
+  res.status(200).json(user)
+}
