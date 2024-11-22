@@ -4,6 +4,8 @@ const userController = require('../Contreoller/UserController')
 
 router.post('/save',userController.createUser)
 
+router.post('/login',userController.userLogin)
+
 router.get('/getAllData',userController.getAlluser)
 
 router.get('/single',userController.singledetail)

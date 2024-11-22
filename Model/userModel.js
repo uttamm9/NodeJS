@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema(
     dob: {
       type:Date,
       required:false
+    },
+    address:{
+      type:String,
+      required:false
     }
   },{versionKey:false,timestamps:true}
 )

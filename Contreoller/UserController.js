@@ -1,5 +1,8 @@
 //request reponce and logic
 const userModel = require('../Model/userModel')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
+const secretkey = 'r4735hhg9rb495g7hrg4g45g'
 
 // exports.createUser = async(req,res) => {
 //   const data = req.body
@@ -7,17 +10,55 @@ const userModel = require('../Model/userModel')
 // }
 
 exports.createUser = async (req,res) =>{
-  console.log(">>>>>>> req body >>>>>>>",req.body)
-  const {email} = req.body
+  try{
+    console.log(">>>>>>> req body >>>>>>>",req.body)
+  const {email,name,password,dpb,address} = req.body
+  if(!(email&&name&&password)){
+    return res.status(404).json({massage:"all feild are requred"})
+  }
   const user = req.body;
-  const match = await userModel.findOne({email})
-  if(match){
+  const userEmail = await userModel.findOne({email})
+  if(userEmail){
     return res.status(200).json({Error:"user already exists"})
   }
-  const userData = new userModel(user)
+
+  const salt = bcrypt.genSaltSync(10)
+  console.log('>>>>>>>>>salt>>>>>',salt)
+  const hashPass = bcrypt.hashSync(password,salt)
+  console.log('>>>>>>>>>hashPass>>>>>',hashPass)
+
+  const data = {
+    name,
+    email,
+    password:hashPass,
+    address
+  }
+
+  const userData = new userModel(data)
   await userData.save()
   res.status(200).json(userData)
+  }
+  catch(err){
+    return res.status(500).json({Error:"Internal server Error"})
+  }
 }
+
+exports.userLogin = async(req,res) =>{
+  const {email,password} = req.body
+  const userEmail = await userModel.findOne({email})
+  if(!userEmail){
+    return res.status(404).json({message:"please sign ip"})
+    }
+    const isMatch = bcrypt.compareSync(password, userEmail.password)
+    if(!isMatch){
+      return res.status(404).json({massage:"password is wrong"})
+    }
+    const token = jwt.sign({id:userEmail._id},secretkey,
+
+    )
+    console.log('>>>>>token>>>>',token)
+    return res.status(200).json({token,maggese:"login succesfully"})
+  }
 
 exports.getAlluser = async(req,res) =>{
   const user = await userModel.find()
