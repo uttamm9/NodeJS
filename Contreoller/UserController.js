@@ -91,3 +91,9 @@ exports.singledetail = async(req,res) =>{
     }
   res.status(200).json(user)
 }
+
+exports.deleteOne = async(req,res)=>{
+  const{id} =req.params
+  const user = await userModel.findByIdAndDelete(id)
+  res.status(200).json(user)
+}
