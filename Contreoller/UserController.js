@@ -53,7 +53,7 @@ exports.userLogin = async(req,res) =>{
     if(!isMatch){
       return res.status(404).json({massage:"password is wrong"})
     }
-    const token = jwt.sign({id:userEmail._id},secretkey,
+    const token = jwt.sign({id:userEmail._id},secretkey,{expiresIn:'1h'}
 
     )
     console.log('>>>>>token>>>>',token)
@@ -83,7 +83,7 @@ exports.updateuser = async(req,res) => {
 }
 
 exports.singledetail = async(req,res) =>{
-  const {email} = req.query
+  const {email} = req.body
   const user = await userModel.findOne({email:email})
   console.log(user)
   if(!user){
