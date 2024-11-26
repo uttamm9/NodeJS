@@ -10,6 +10,7 @@ module.exports = async(req,res,next)=>{
       return res.status(401).json({massage:"No token provided"});
     }
     const splitToken = token.split(" ")[1] // 1 index
+    //splitToken => get only token remove berier word
     const decode = jwt.verify(splitToken,secretkey)
     if(!decode){
       return res.status(401).json({massage:'invalid token'});
@@ -22,7 +23,7 @@ module.exports = async(req,res,next)=>{
 
     }
 
-    next()
+    next() //run API
 
   } catch (error) {
     res.status(400).send('Invalid token');

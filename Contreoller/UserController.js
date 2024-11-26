@@ -10,6 +10,10 @@ const secretkey = 'r4735hhg9rb495g7hrg4g45g'
 // }
 
 exports.createUser = async (req,res) =>{
+  console.log('>>>>>file>>>',req.files)
+  console.log('>>>>>>body>>>',req.body)
+  console.log('...file data>>>',req.files.photo.data)
+
   try{
     console.log(">>>>>>> req body >>>>>>>",req.body)
   const {email,name,password,dpb,address} = req.body
