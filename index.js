@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 require("dotenv").config();
 const cors = require('cors')
 const fileupload = require('express-fileupload')
+const cloudinary = require('cloudinary')
 
 const app = express()
 const PORT = process.env.PORT || 6000 

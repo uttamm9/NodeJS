@@ -3,6 +3,7 @@ const userModel = require('../Model/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const secretkey = 'r4735hhg9rb495g7hrg4g45g'
+const {Fileupload} = require('../utility/cloudinaryService');
 
 // exports.createUser = async(req,res) => {
 //   const data = req.body
@@ -13,7 +14,10 @@ exports.createUser = async (req,res) =>{
   console.log('>>>>>file>>>',req.files)
   console.log('>>>>>>body>>>',req.body)
   console.log('...file data>>>',req.files.photo.data)
+  const fileupload = Fileupload(req.files)
+  console.log('>>>Fileupload>>>',fileupload)
 
+  return 
   try{
     console.log(">>>>>>> req body >>>>>>>",req.body)
   const {email,name,password,dpb,address} = req.body
