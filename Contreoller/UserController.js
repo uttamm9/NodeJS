@@ -4,22 +4,33 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const secretkey = 'r4735hhg9rb495g7hrg4g45g'
 const {Fileupload} = require('../utility/cloudinaryService');
+const fileUpload = require('express-fileupload');
 
 // exports.createUser = async(req,res) => {
 //   const data = req.body
 //   const user = new userModel(daat)
 // }
 
-exports.createUser = async (req,res) =>{
-  console.log('>>>>>file>>>',req.files)
-  console.log('>>>>>>body>>>',req.body)
-  console.log('...file data>>>',req.files.photo.data)
-  const fileupload = Fileupload(req.files)
-  console.log('>>>Fileupload>>>',fileupload)
+const  Gen_OTP = ()=>{
+  const otp = Math.floor(100000 + Math.random()*900000).toString()
+  return otp;
+} 
 
-  return 
+
+
+exports.createUser = async (req,res) =>{
+  
   try{
-    console.log(">>>>>>> req body >>>>>>>",req.body)
+    // console.log('>>>>>file>>>',req.files)
+  // console.log('>>>>>>body>>>',req.body)
+  // console.log('...file data>>>',req.files.photo.data)
+  const fileupload = await Fileupload(req.files)
+  
+  // console.log('>>>Fileupload>>>',fileupload[0].url);
+  const randomOTP = await Gen_OTP();
+  console.log('>>>>>>OTP>>>>',randomOTP);
+ 
+    // console.log(">>>>>>> req body >>>>>>>",req.body)
   const {email,name,password,dpb,address} = req.body
   if(!(email&&name&&password)){
     return res.status(404).json({massage:"all feild are requred"})
@@ -39,7 +50,9 @@ exports.createUser = async (req,res) =>{
     name,
     email,
     password:hashPass,
-    address
+    address,
+    photo:fileupload[0].url,
+    OTP:Gen_OTP()
   }
 
   const userData = new userModel(data)

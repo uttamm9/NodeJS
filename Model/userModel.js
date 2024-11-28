@@ -22,6 +22,14 @@ const userSchema = new mongoose.Schema(
     address:{
       type:String,
       required:false
+    },
+    photo:{
+      type:JSON,
+      required:false
+    },
+    OTP:{
+      type:String,
+      required:true
     }
   },{versionKey:false,timestamps:true}
 )
