@@ -29,6 +29,7 @@ exports.Fileupload = async (file) =>{
           }
           resolve(result);
         }).end(file.data)
+        //end(file.data)=> Yeh method stream ko end karne ke liye use hota hai aur file.data ko as input stream me bhejta hai.
       })
       results.push(result_data)
 

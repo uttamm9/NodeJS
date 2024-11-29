@@ -27,10 +27,13 @@ const userSchema = new mongoose.Schema(
       type:JSON,
       required:false
     },
-    OTP:{
+    OTP: { 
       type:String,
-      required:true
-    }
+      // required:true
+     },
+     OTPexpire:{
+      type:String,
+     }
   },{versionKey:false,timestamps:true}
 )
 module.exports = mongoose.model('user',userSchema)

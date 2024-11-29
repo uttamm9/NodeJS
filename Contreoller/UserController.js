@@ -4,14 +4,15 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const secretkey = 'r4735hhg9rb495g7hrg4g45g'
 const {Fileupload} = require('../utility/cloudinaryService');
-const fileUpload = require('express-fileupload');
+
+const moment = require('moment')
 
 // exports.createUser = async(req,res) => {
 //   const data = req.body
 //   const user = new userModel(daat)
 // }
 
-const  Gen_OTP = ()=>{
+const  Gen_OTP = async ()=>{
   const otp = Math.floor(100000 + Math.random()*900000).toString()
   return otp;
 } 
@@ -28,6 +29,8 @@ exports.createUser = async (req,res) =>{
   
   // console.log('>>>Fileupload>>>',fileupload[0].url);
   const randomOTP = await Gen_OTP();
+    const expireOTP = moment().add(1,"minutes")
+
   console.log('>>>>>>OTP>>>>',randomOTP);
  
     // console.log(">>>>>>> req body >>>>>>>",req.body)
@@ -46,18 +49,21 @@ exports.createUser = async (req,res) =>{
   const hashPass = bcrypt.hashSync(password,salt)
   console.log('>>>>>>>>>hashPass>>>>>',hashPass)
 
-  const data = {
+  const Data = {
     name,
     email,
     password:hashPass,
     address,
     photo:fileupload[0].url,
-    OTP:Gen_OTP()
-  }
+    OTP: randomOTP,
+    OTPexpire:expireOTP
+  };
 
-  const userData = new userModel(data)
-  await userData.save()
-  res.status(200).json(userData)
+  const userData = new userModel(Data);
+  console.log('...>>>>userdata....',userData);
+    await userData.save();
+
+    res.status(200).json(userData)
   }
   catch(err){
     return res.status(500).json({Error:"Internal server Error"})
@@ -65,19 +71,32 @@ exports.createUser = async (req,res) =>{
 }
 
 exports.userLogin = async(req,res) =>{
-  const {email,password} = req.body
+  const {email,password,OTP} = req.body
   const userEmail = await userModel.findOne({email})
   if(!userEmail){
-    return res.status(404).json({message:"please sign ip"})
+    return res.status(404).json({message:"please sign up"})
     }
     const isMatch = bcrypt.compareSync(password, userEmail.password)
     if(!isMatch){
       return res.status(404).json({massage:"password is wrong"})
     }
+    const isexpire = userEmail.OTPexpire
+    const verifyTime = moment().isAfter(isexpire) // if expired return true
+    if(verifyTime){
+      return res.status(400).json({massage:'otp has Expired'})
+    }
+    if(OTP!=userEmail.OTP){
+      return res.status(400).json({massage:'invalid OTP'})
+    }
+    if(OTP == userEmail.OTP){
+      userEmail.OTP = undefined;
+      await userEmail.save()
+    }
     const token = jwt.sign({id:userEmail._id},secretkey,{expiresIn:'1h'}
 
     )
     console.log('>>>>>token>>>>',token)
+
     return res.status(200).json({token,maggese:"login succesfully"})
   }
 
