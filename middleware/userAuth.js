@@ -17,6 +17,7 @@ module.exports = async(req,res,next)=>{
     }
     console.log(">>>>>>decode>>>>",decode)
     const user = await userModel.findById(decode.id);
+    // req.user = user;
     console.log(">>>>>>decode>>>>",user)
     if(!user){
       return res.status(401).json({massage:'user not found'})

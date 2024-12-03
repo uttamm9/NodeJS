@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 const secretkey = 'r4735hhg9rb495g7hrg4g45g'
 const {Fileupload} = require('../utility/cloudinaryService');
 
-const moment = require('moment')
+const moment = require('moment');
+const LoginDetails = require('../Model/Login-Model');
 
 // exports.createUser = async(req,res) => {
 //   const data = req.body
@@ -34,7 +35,7 @@ exports.createUser = async (req,res) =>{
   console.log('>>>>>>OTP>>>>',randomOTP);
  
     // console.log(">>>>>>> req body >>>>>>>",req.body)
-  const {email,name,password,dpb,address} = req.body
+  const {email,name,password,dob,address} = req.body
   if(!(email&&name&&password)){
     return res.status(404).json({massage:"all feild are requred"})
   }
@@ -71,32 +72,42 @@ exports.createUser = async (req,res) =>{
 }
 
 exports.userLogin = async(req,res) =>{
+
   const {email,password,OTP} = req.body
   const userEmail = await userModel.findOne({email})
-  if(!userEmail){
+  // console.log('<<<<<<req.user>>>>>',userEmail)
+
+  if(!userEmail){ 
     return res.status(404).json({message:"please sign up"})
     }
     const isMatch = bcrypt.compareSync(password, userEmail.password)
     if(!isMatch){
       return res.status(404).json({massage:"password is wrong"})
     }
-    const isexpire = userEmail.OTPexpire
-    const verifyTime = moment().isAfter(isexpire) // if expired return true
-    if(verifyTime){
-      return res.status(400).json({massage:'otp has Expired'})
-    }
+
+    // const isexpire = userEmail.OTPexpire
+    // const verifyTime = moment().isAfter(isexpire) // if expired return true
+    // if(verifyTime){
+    //   return res.status(400).json({massage:'otp has Expired'})
+    // }
     if(OTP!=userEmail.OTP){
       return res.status(400).json({massage:'invalid OTP'})
     }
-    if(OTP == userEmail.OTP){
-      userEmail.OTP = undefined;
-      await userEmail.save()
-    }
+    // if(OTP == userEmail.OTP){
+    //   userEmail.OTP = undefined;
+    //   await userEmail.save()
+    // }
     const token = jwt.sign({id:userEmail._id},secretkey,{expiresIn:'1h'}
 
     )
-    console.log('>>>>>token>>>>',token)
+    const logindetails = {
+      count:1,
+      user_id:userEmail._id
+    }
 
+    console.log('>>>>>token>>>>',token)
+    const loginUser = new LoginDetails(logindetails)
+    await loginUser.save()
     return res.status(200).json({token,maggese:"login succesfully"})
   }
 
