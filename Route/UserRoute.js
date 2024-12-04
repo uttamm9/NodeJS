@@ -8,7 +8,7 @@ router.post('/save',userController.createUser)
 
 router.post('/login',userController.userLogin)
 
-router.get('/getAllData',userAuth,userController.getAlluser)
+router.get('/getAllData',userController.getAlluser)
 
 router.get('/single',userAuth,userController.singledetail)
 
@@ -16,6 +16,8 @@ router.get('/single',userAuth,userController.singledetail)
 router.patch('/updateuser',userController.updateuser)
 
 router.delete('/delete/:id',userController.deleteOne)
+
+router.post('/mail',userController.sendMail)
 
 
 

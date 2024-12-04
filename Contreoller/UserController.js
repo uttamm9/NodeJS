@@ -4,9 +4,11 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const secretkey = 'r4735hhg9rb495g7hrg4g45g'
 const {Fileupload} = require('../utility/cloudinaryService');
+const nodemailer = require('nodemailer')
 
 const moment = require('moment');
 const LoginDetails = require('../Model/Login-Model');
+const LoginModel = require('../Model/Login-Model');
 
 // exports.createUser = async(req,res) => {
 //   const data = req.body
@@ -112,7 +114,7 @@ exports.userLogin = async(req,res) =>{
   }
 
 exports.getAlluser = async(req,res) =>{
-  const user = await userModel.find()
+  const user = await LoginModel.find().populate('user_id')
   if(!user){
     return res.status(404).json({Error:"user not found"});
     }
@@ -148,3 +150,40 @@ exports.deleteOne = async(req,res)=>{
   const user = await userModel.findByIdAndDelete(id)
   res.status(200).json(user)
 }
+
+exports.sendMail = async(req,res)=>{
+  try {
+    const {to,massage,subject} = req.body;
+    if(!(to&&massage&&subject)){
+      return res.status(400).json({massage:'All feild required'})
+    }
+    const transporter = nodemailer.createTransport({
+      
+      host : 'smtp.gmail.com',
+      port:587,
+      auth:{
+        user:'uttamftspl@gmail.com',
+        pass:'wlxj plim jsij fvzv'
+      }
+    });
+        const mailOptions = {
+          from: "uttamftspl@gmail.com",
+          to: to,
+          subject: subject,
+          text: massage,
+        };
+    
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            dd;
+            console.log("Error:", error);
+          } else {
+            console.log("Email sent:", info.response);
+            return res.status(200).json({massage:'mail sent sussecfully'})
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "interval server error" });
+      }
+    };
