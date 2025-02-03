@@ -5,9 +5,10 @@ const jwt = require('jsonwebtoken');
 const secretkey = 'r4735hhg9rb495g7hrg4g45g'
 const {Fileupload} = require('../utility/cloudinaryService');
 const nodemailer = require('nodemailer')
+const os = require('os')
 
 const moment = require('moment');
-const LoginDetails = require('../Model/Login-Model');
+
 const LoginModel = require('../Model/Login-Model');
 
 // exports.createUser = async(req,res) => {
@@ -77,7 +78,8 @@ exports.userLogin = async(req,res) =>{
 
   const {email,password,OTP} = req.body
   const userEmail = await userModel.findOne({email})
-  // console.log('<<<<<<req.user>>>>>',userEmail)
+  // console.log('<<<<<<req.socket>>',req.socket.remoteAddress)
+  // console.log(os.hostname()) // ramsetu
 
   if(!userEmail){ 
     return res.status(404).json({message:"please sign up"})
@@ -107,8 +109,8 @@ exports.userLogin = async(req,res) =>{
       user_id:userEmail._id
     }
 
-    console.log('>>>>>token>>>>',token)
-    const loginUser = new LoginDetails(logindetails)
+    // console.log('>>>>>token>>>>',token)
+    const loginUser = new LoginModel(logindetails)
     await loginUser.save()
     return res.status(200).json({token,maggese:"login succesfully"})
   }
