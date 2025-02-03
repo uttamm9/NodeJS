@@ -10,7 +10,9 @@ const PORT = process.env.PORT || 6000
 
 app.use(cors())
 app.use(express.json());
+//middleware fnx in Express.js, Yeh line aapke server ko bataati hai ki jab bhi koi client JSON data bheje, to server us data ko samajh sake aur use aaram se process kar sake.
 app.use(express.urlencoded({extended:true}))
+//server ko form data (URL-encoded data) ko samajhne aur usse process karne me madad karti hai. yeh middleware us data ko parse karke req.body me store kar deta hai.
 app.use(fileupload())
 
 const userRouter = require('./Route/UserRoute')
